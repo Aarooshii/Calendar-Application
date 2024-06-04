@@ -1,0 +1,65 @@
+#include <stdio.h>
+
+int daysInMonths[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+char *months[13] = { "", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+
+int inputYear() {
+    int year;
+    printf("Enter a year: ");
+    scanf("%d", &year);
+    return year;
+}
+
+int determineDayCode(int year) {
+    int dayCode;
+    int d1, d2, d3;
+
+    d1 = (year - 1.0) / 4.0;
+    d2 = (year - 1.0) / 100.0;
+    d3 = (year - 1.0) / 400.0;
+    dayCode = (year + d1 - d2 + d3) % 7;
+    return dayCode;
+}
+
+int determineLeapYear(int year) {
+    if((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+        daysInMonths[2] = 29;
+        return 1;
+    } else {
+        daysInMonths[2] = 28;
+        return 0;
+    }
+}
+
+void calendar(int year, int dayCode) {
+    int month, day;
+
+    for (month = 1; month <= 12; month++) {
+        printf("\n\n%s\n", months[month]);
+        printf("Sun  Mon  Tue  Wed  Thu  Fri  Sat\n");
+
+        for (day = 1; day <= 1 + dayCode * 5; day++) {
+            printf(" ");
+        }
+
+        for (day = 1; day <= daysInMonths[month]; day++) {
+            printf("%2d", day);
+
+            if ((day + dayCode) % 7 > 0)
+                printf("   ");
+            else
+                printf("\n");
+        }
+
+        dayCode = (dayCode + daysInMonths[month]) % 7;
+    }
+}
+
+int main() {
+    int year = inputYear();
+    int dayCode = determineDayCode(year);
+    determineLeapYear(year);
+    calendar(year, dayCode);
+
+    return 0;
+}
